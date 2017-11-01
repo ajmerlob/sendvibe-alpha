@@ -196,7 +196,8 @@ def print_index_table():
           '<td>Clear the access token currently stored in the user session. ' +
           '    After clearing the token, if you <a href="/test">test the ' +
           '    API request</a> again, you should go back to the auth flow.' +
-          '</td></tr></table>')
+          '</td></tr></table>' + 
+ 'This just tests out where <a href="/stuff">stuff</a> goes')
 
 
 if __name__ == '__main__':
