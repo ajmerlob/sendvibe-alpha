@@ -40,13 +40,6 @@ application = flask.Flask(__name__)
 application.secret_key = 'youdontknowmelikeiknowme123123231homie'
 
 
-@application.before_request
-def before_request():
-    if request.url.startswith('http://'):
-        url = request.url.replace('http://', 'https://', 1)
-        code = 301
-        return redirect(url, code=code)
-
 
 @application.route('/')
 def index():
@@ -143,6 +136,10 @@ def oauth2callback():
 
   return flask.redirect(flask.url_for('test_api_request'))
 
+
+#application.route('/stuff')
+def stuff():
+  return ('This just tests out where <a href="/">stuff</a> goes')
 
 @application.route('/revoke')
 def revoke():
