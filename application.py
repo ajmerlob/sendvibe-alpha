@@ -39,10 +39,6 @@ application = flask.Flask(__name__)
 # key. See http://flask.pocoo.org/docs/0.12/quickstart/#sessions.
 application.secret_key = 'youdontknowmelikeiknowme123123231homie'
 
-application.config.update(dict(
-  PREFERRED_URL_SCHEME = 'https'
-))
-
 @application.route('/')
 def index():
   return print_index_table()
@@ -76,7 +72,7 @@ def authorize():
   flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
       CLIENT_SECRETS_FILE, scopes=SCOPES)
 
-  flow.redirect_uri = flask.url_for('oauth2callback', _external=True, _schema='https')
+  flow.redirect_uri = flask.url_for('oauth2callback', _external=True)
 
   authorization_url, state = flow.authorization_url(
       # Enable offline access so that you can refresh an access token without
@@ -112,7 +108,7 @@ def oauth2callback():
   flask.session['credentials'] = credentials_to_dict(credentials)
   save_creds(flask.session['credentials'])
 
-  return flask.redirect(flask.url_for('test_api_request'))
+  return flask.redirect(flask.url_for('stuff', _schema='https'))
 
 
 @application.route('/stuff')
