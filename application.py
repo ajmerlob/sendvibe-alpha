@@ -33,20 +33,19 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 API_SERVICE_NAME = 'gmail'
 API_VERSION = 'v1'
 
-app = flask.Flask(__name__)
-application = app
+application = flask.Flask(__name__)
 # Note: A secret key is included in the sample so that it works.
 # If you use this code in your application, replace this with a truly secret
 # key. See http://flask.pocoo.org/docs/0.12/quickstart/#sessions.
-app.secret_key = 'youdontknowmelikeiknowme123123231homie'
+application.secret_key = 'youdontknowmelikeiknowme123123231homie'
 
 
-@app.route('/')
+@application.route('/')
 def index():
   return print_index_table()
 
 
-@app.route('/test')
+@application.route('/test')
 def test_api_request():
   if 'credentials' not in flask.session:
     return flask.redirect('authorize')
@@ -69,7 +68,7 @@ def test_api_request():
   return flask.jsonify(**results)
 
 ##Aaron's code - for testing purposes only
-@app.route('/test2')
+@application.route('/test2')
 def test_saved_request():
   if 'credentials' in flask.session:
     return flask.redirect('/')
@@ -92,7 +91,7 @@ def test_saved_request():
 
 
 
-@app.route('/authorize')
+@application.route('/authorize')
 def authorize():
   # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps.
   flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
@@ -113,7 +112,7 @@ def authorize():
   return flask.redirect(authorization_url)
 
 
-@app.route('/oauth2callback')
+@application.route('/oauth2callback')
 def oauth2callback():
   # Specify the state when creating the flow in the callback so that it can
   # verified in the authorization server response.
@@ -137,7 +136,7 @@ def oauth2callback():
   return flask.redirect(flask.url_for('test_api_request'))
 
 
-@app.route('/revoke')
+@application.route('/revoke')
 def revoke():
   if 'credentials' not in flask.session:
     return ('You need to <a href="/authorize">authorize</a> before ' +
@@ -157,7 +156,7 @@ def revoke():
     return('An error occurred.' + print_index_table())
 
 
-@app.route('/clear')
+@application.route('/clear')
 def clear_credentials():
   if 'credentials' in flask.session:
     del flask.session['credentials']
@@ -203,4 +202,4 @@ if __name__ == '__main__':
 
   # Specify a hostname and port that are set as a valid redirect URI
   # for your API project in the Google API Console.
-  app.run('localhost', 8080, debug=True)
+  application.run('localhost', 8080, debug=True)
