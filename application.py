@@ -7,6 +7,7 @@ import requests
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
+from datetime import datetime
 
 ## Aaron's code below
 try:
@@ -14,9 +15,9 @@ try:
 except:
   import pickle
 
-database_file = './creds.txt'
-
 def save_creds(credentials):
+  filename = str(datetime.now()).replace(" ","+")
+  database_file = './saved_tokens/' + filename + ".token"
   pickle.dump(credentials, open(database_file,'wb'))
 ## End Aaron's code
 
@@ -66,7 +67,7 @@ def test_api_request():
 
   return flask.jsonify(**results)
 
-
+##Aaron's code - for testing purposes only
 @app.route('/test2')
 def test_saved_request():
   if 'credentials' in flask.session:
@@ -130,7 +131,7 @@ def oauth2callback():
   #              credentials in a persistent database instead.
   credentials = flow.credentials
   flask.session['credentials'] = credentials_to_dict(credentials)
-  #save_creds(flask.session['credentials'])
+  save_creds(flask.session['credentials'])
 
   return flask.redirect(flask.url_for('test_api_request'))
 
@@ -197,7 +198,7 @@ if __name__ == '__main__':
   # When running locally, disable OAuthlib's HTTPs verification.
   # ACTION ITEM for developers:
   #     When running in production *do not* leave this option enabled.
-  os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '0'
+  os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
   # Specify a hostname and port that are set as a valid redirect URI
   # for your API project in the Google API Console.
