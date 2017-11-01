@@ -108,7 +108,7 @@ def oauth2callback():
   flask.session['credentials'] = credentials_to_dict(credentials)
   save_creds(flask.session['credentials'])
 
-  return flask.redirect(flask.url_for('stuff',scheme='https'))
+  return flask.redirect('stuff',scheme='https')
 
 
 @application.route('/stuff')
