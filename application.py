@@ -44,7 +44,7 @@ application.secret_key = 'youdontknowmelikeiknowme123123231homie'
 @application.route('/')
 def index():
   if flask.request.url.startswith('http://'):
-    url = flask.url_for('index', _schema="https")
+    url = flask.url_for('index', _external=True, _schema="https")
     code = 301
     return flask.redirect(url, code=code)
   return print_index_table()
