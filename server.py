@@ -9,14 +9,15 @@ import google_auth_oauthlib.flow
 import googleapiclient.discovery
 
 ## Aaron's code below
+try:
+  import cPickle as pickle
+except:
+  import pickle
+
 database_file = './creds.txt'
-database_format = ['token', 'refresh_token','token_uri',
-          'client_id', 'client_secret', 'scopes']
 
 def save_creds(credentials):
-  creds = credentials_to_dict(credentials)
-  with open (datafile_file,'a') as outfile:
-    outfile.write("|".join([creds[col] for col in database_format]) + "\n")
+  pickle.dump(credentials, open(database_file,'wb'))
 ## End Aaron's code
 
 # This variable specifies the name of a file that contains the OAuth 2.0
@@ -55,15 +56,38 @@ def test_api_request():
   gmail = googleapiclient.discovery.build(
       API_SERVICE_NAME, API_VERSION, credentials=credentials)
 
-  results = gmail.users().labels().list(userId='me').execute()
+  results = gmail.users().messages().list(userId='me').execute()
 
   # Save credentials back to session in case access token was refreshed.
   # ACTION ITEM: In a production app, you likely want to save these
   #              credentials in a persistent database instead.
   flask.session['credentials'] = credentials_to_dict(credentials)
-  #save_creds(flask.session['credentials'])
+  save_creds(flask.session['credentials'])
 
   return flask.jsonify(**results)
+
+
+@app.route('/test2')
+def test_saved_request():
+  if 'credentials' in flask.session:
+    return flask.redirect('/')
+
+  # Load credentials from the persistent storage.
+  credentials = credentials = google.oauth2.credentials.Credentials(**pickle.load(open(database_file,'rb')))
+
+  gmail = googleapiclient.discovery.build(
+      API_SERVICE_NAME, API_VERSION, credentials=credentials)
+
+  results = gmail.users().messages().list(userId='me').execute()
+
+  # Save credentials back to session in case access token was refreshed.
+  # ACTION ITEM: In a production app, you likely want to save these
+  #              credentials in a persistent database instead.
+  flask.session['credentials'] = credentials_to_dict(credentials)
+  save_creds(flask.session['credentials'])
+
+  return flask.jsonify(**results)
+
 
 
 @app.route('/authorize')
