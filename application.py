@@ -39,14 +39,12 @@ application = flask.Flask(__name__)
 # key. See http://flask.pocoo.org/docs/0.12/quickstart/#sessions.
 application.secret_key = 'youdontknowmelikeiknowme123123231homie'
 
-
+application.config.update(dict(
+  PREFERRED_URL_SCHEME = 'https'
+))
 
 @application.route('/')
 def index():
-  if flask.request.url.startswith('http://'):
-    url = flask.url_for('index', _external=True, _schema="https")
-    code = 301
-    return flask.redirect(url, code=code)
   return print_index_table()
 
 
