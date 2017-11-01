@@ -8,6 +8,7 @@ SendVibe Teams Product
 User is a 41 y/o male team leader that wants a higher performing team doing Google searches for "effective team communication".
 
 ### Product Features
+* Allows a user to authenticate using OAuth2
 * Downloads all your emails
 * Analyzes each alter, and does a TF-IDF for politeness (please / thank you), directness (will you, can you), and pushiness (should, need)
 * Analyzes ego (same dimensions) for differences in style per alter (i.e. do they beat up their direct reports, but suplicate to their boss).
