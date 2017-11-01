@@ -137,7 +137,7 @@ def oauth2callback():
   return flask.redirect(flask.url_for('test_api_request'))
 
 
-#application.route('/stuff')
+@application.route('/stuff')
 def stuff():
   return ('This just tests out where <a href="/">stuff</a> goes')
 
