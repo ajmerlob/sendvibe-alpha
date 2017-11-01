@@ -68,37 +68,13 @@ def test_api_request():
 
   return flask.jsonify(**results)
 
-##Aaron's code - for testing purposes only
-@application.route('/test2')
-def test_saved_request():
-  if 'credentials' in flask.session:
-    return flask.redirect('/')
-
-  # Load credentials from the persistent storage.
-  credentials = credentials = google.oauth2.credentials.Credentials(**pickle.load(open(database_file,'rb')))
-
-  gmail = googleapiclient.discovery.build(
-      API_SERVICE_NAME, API_VERSION, credentials=credentials)
-
-  results = gmail.users().messages().list(userId='me').execute()
-
-  # Save credentials back to session in case access token was refreshed.
-  # ACTION ITEM: In a production app, you likely want to save these
-  #              credentials in a persistent database instead.
-  flask.session['credentials'] = credentials_to_dict(credentials)
-  save_creds(flask.session['credentials'])
-
-  return flask.jsonify(**results)
-
-
-
 @application.route('/authorize')
 def authorize():
   # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps.
   flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
       CLIENT_SECRETS_FILE, scopes=SCOPES)
 
-  flow.redirect_uri = flask.url_for('oauth2callback', _external=True)
+  flow.redirect_uri = flask.url_for('oauth2callback', _external=True, _scheme='https')
 
   authorization_url, state = flow.authorization_url(
       # Enable offline access so that you can refresh an access token without
