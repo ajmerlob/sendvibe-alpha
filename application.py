@@ -72,7 +72,7 @@ def authorize():
   flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
       CLIENT_SECRETS_FILE, scopes=SCOPES)
 
-  flow.redirect_uri = flask.url_for('oauth2callback', _external=True)
+  flow.redirect_uri = flask.url_for('oauth2callback', _external=True, _schema='https')
 
   authorization_url, state = flow.authorization_url(
       # Enable offline access so that you can refresh an access token without
@@ -95,7 +95,7 @@ def oauth2callback():
 
   flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
       CLIENT_SECRETS_FILE, scopes=SCOPES, state=state)
-  flow.redirect_uri = flask.url_for('oauth2callback', _external=True)
+  flow.redirect_uri = flask.url_for('oauth2callback', _external=True, _schema='https')
 
   # Use the authorization server's response to fetch the OAuth 2.0 tokens.
   authorization_response = flask.request.url
@@ -108,7 +108,7 @@ def oauth2callback():
   flask.session['credentials'] = credentials_to_dict(credentials)
   save_creds(flask.session['credentials'])
 
-  return flask.redirect(flask.url_for('stuff', _schema='https'))
+  return flask.redirect(flask.url_for('stuff'))
 
 
 @application.route('/stuff')
