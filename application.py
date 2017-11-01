@@ -43,6 +43,10 @@ application.secret_key = 'youdontknowmelikeiknowme123123231homie'
 
 @application.route('/')
 def index():
+#  if request.url.startswith('http://'):
+#    url = request.url.replace('http://', 'https://', 1)
+#    code = 301
+#    return redirect(url, code=code)
   return print_index_table()
 
 
@@ -74,7 +78,7 @@ def authorize():
   flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
       CLIENT_SECRETS_FILE, scopes=SCOPES)
 
-  flow.redirect_uri = flask.url_for('oauth2callback', _external=True, _scheme='https')
+  flow.redirect_uri = flask.url_for('oauth2callback', _external=True)
 
   authorization_url, state = flow.authorization_url(
       # Enable offline access so that you can refresh an access token without
