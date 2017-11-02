@@ -8,17 +8,22 @@ import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 from datetime import datetime
+import boto3
 
 ## Aaron's code below
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('tokens')
 try:
   import cPickle as pickle
 except:
   import pickle
 
 def save_creds(credentials):
-  filename = str(datetime.now()).replace(" ","+")
-  database_file = './saved_tokens/' + filename + ".token"
+  timestamp = str(datetime.now()).replace(" ","+")
+  database_file = './saved_tokens/' + timestamp + ".token"
   pickle.dump(credentials, open(database_file,'wb'))
+  credentials['timestamp'] = timestamp
+  table.put_item(Item=credentials)
 ## End Aaron's code
 
 # This variable specifies the name of a file that contains the OAuth 2.0
@@ -69,6 +74,9 @@ def authorize():
 ## then trades what it gets for a cool token
 @application.route('/oauth2callback')
 def oauth2callback():
+  ##TODO: Needs error handling if user clicks cancel
+  ##server sends back 'access_denied'
+
   # Specify the state when creating the flow in the callback so that it can
   # verified in the authorization server response.
   state = flask.session['state']
