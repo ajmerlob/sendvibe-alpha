@@ -119,7 +119,7 @@ def stuff():
 def revoke():
   if 'credentials' not in flask.session:
     return ('You need to <a href="/authorize">authorize</a> before ' +
-            'testing the code to revoke credentials.')
+            'we can revoke your credentials.<BR><BR>Alternatively, please revoke access on the <a href="https://security.google.com/settings/security/permissions">Permissions Page</a>(authentication required) or read the <a href="https://support.google.com/accounts/answer/3466521?hl=en">Support Page</a> that describes how to revoke access')
 
   credentials = google.oauth2.credentials.Credentials(
     **flask.session['credentials'])
@@ -132,7 +132,7 @@ def revoke():
   if status_code == 200:
     return(flask.redirect("https://sendvibe.email/sorry-to-see-you-go"))
   else:
-    return('An error occurred, and access has not yet been revoked.  Please revoke access on the <a href="https://security.google.com/settings/security/permissions">Permissions Page</a>(authentication required) or read the <a href="https://support.google.com/accounts/answer/3466521?hl=en">Support Page</a> that describes how to revoke access')
+    return(flask.redirect("https://sendvibe.email/this-is-awkward"))
 
 
 @application.route('/clear')
