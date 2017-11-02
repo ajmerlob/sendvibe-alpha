@@ -108,7 +108,7 @@ def oauth2callback():
   flask.session['credentials'] = credentials_to_dict(credentials)
   save_creds(flask.session['credentials'])
 
-  return ('You are now authorized! Go <a href="/">home</a> now!')
+  return flask.redirect('https://sendvibe.email/thanks-for-signing-up')
 
 
 @application.route('/stuff')
@@ -182,4 +182,4 @@ if __name__ == '__main__':
 
   # Specify a hostname and port that are set as a valid redirect URI
   # for your API project in the Google API Console.
-  application.run('localhost', 8080, debug=True)
+  application.run('localhost', 5000, debug=True)
