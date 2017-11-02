@@ -130,7 +130,7 @@ def revoke():
 
   status_code = getattr(revoke, 'status_code')
   if status_code == 200:
-    return('Credentials successfully revoked.' + print_index_table())
+    return(flask.redirect("https://sendvibe.email/sorry-to-see-you-go"))
   else:
     return('An error occurred.' + print_index_table())
 
