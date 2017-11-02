@@ -41,8 +41,7 @@ application.secret_key = 'youdontknowmelikeiknowme123123231homie'
 
 @application.route('/')
 def index():
-  return print_index_table()
-
+  return flask.redirect("https://sendvibe.email")
 
 @application.route('/test')
 def test_api_request():
@@ -111,10 +110,6 @@ def oauth2callback():
   return flask.redirect('https://sendvibe.email/thanks-for-signing-up')
 
 
-@application.route('/stuff')
-def stuff():
-  return ('This just tests out where <a href="/">stuff</a> goes')
-
 @application.route('/revoke')
 def revoke():
   if 'credentials' not in flask.session:
@@ -170,8 +165,7 @@ def print_index_table():
           '<td>Clear the access token currently stored in the user session. ' +
           '    After clearing the token, if you <a href="/test">test the ' +
           '    API request</a> again, you should go back to the auth flow.' +
-          '</td></tr></table>' + 
- 'This just tests out where <a href="/stuff">stuff</a> goes')
+          '</td></tr></table>')
 
 
 if __name__ == '__main__':
