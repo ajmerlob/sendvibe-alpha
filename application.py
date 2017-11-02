@@ -132,7 +132,7 @@ def revoke():
   if status_code == 200:
     return(flask.redirect("https://sendvibe.email/sorry-to-see-you-go"))
   else:
-    return('An error occurred.' + print_index_table())
+    return('An error occurred, and access has not yet been revoked.  Please revoke access on the <a href="https://security.google.com/settings/security/permissions">Permissions Page</a>(authentication required) or read the <a href="https://support.google.com/accounts/answer/3466521?hl=en">Support Page</a> that describes how to revoke access')
 
 
 @application.route('/clear')
