@@ -24,6 +24,7 @@ def save_creds(credentials):
   pickle.dump(credentials, open(database_file,'wb'))
   credentials['timestamp'] = timestamp
   table.put_item(Item=credentials)
+  del credentials['timestamp']
 ## End Aaron's code
 
 # This variable specifies the name of a file that contains the OAuth 2.0
