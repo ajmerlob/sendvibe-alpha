@@ -28,9 +28,14 @@ def save_creds(credentials):
   logging.error("4")
   save['timestamp'] = str(datetime.now()).replace(" ","+") 
   logging.error("5")
-  save['key'] =  service.users().getProfile(userId='me').execute()['emailAddress'] 
+  email_address = service.users().getProfile(userId='me').execute()['emailAddress'] 
+  save['key'] = email_address
+  logging.error(save['refresh_token'])
+  logging.error(type(save['refresh_token']))
+  if save['refresh_token'] is None:
+    save['refresh_token'] = table.get_item(key=email_address)['Item']['refresh_token']
   logging.error("6")
-  table.update_item(Item=save)
+  table.put_item(Item=save)
   logging.error("7")
 ## End Aaron's code
 
