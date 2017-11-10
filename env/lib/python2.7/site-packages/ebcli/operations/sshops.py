@@ -1,4 +1,4 @@
-# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -128,11 +128,10 @@ def ssh_into_instance(instance_id, keep_open=False, force_open=False, custom_ssh
 
     # do ssh
     try:
-        ident_file = _get_ssh_file(keypair_name)
-
         if custom_ssh:
             custom_ssh = custom_ssh.split()
         else:
+            ident_file = _get_ssh_file(keypair_name)
             custom_ssh = ['ssh', '-i', ident_file]
 
         custom_ssh.extend([user + '@' + ip])

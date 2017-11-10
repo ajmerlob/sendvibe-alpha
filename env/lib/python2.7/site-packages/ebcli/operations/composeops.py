@@ -1,4 +1,4 @@
-# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -32,10 +32,7 @@ def compose(app_name, version_labels, grouped_env_names, group_name=None,
     if nohang:
         return
 
-    try:
-        commonops.wait_for_compose_events(request_id, app_name, grouped_env_names, timeout)
-    except TimeoutError:
-        io.log_error(strings['timeout.error'])
+    commonops.wait_for_compose_events(request_id, app_name, grouped_env_names, timeout)
 
 
 def compose_apps(app_name, version_labels, group_name=None):

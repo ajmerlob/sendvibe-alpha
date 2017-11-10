@@ -1,4 +1,4 @@
-# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -63,7 +63,8 @@ def deploy(app_name, env_name, version, label, message, group_name=None,
 
     commonops.wait_for_success_events(request_id,
                                       timeout_in_minutes=timeout,
-                                      can_abort=True)
+                                      can_abort=True,
+                                      env_name=env_name)
 
 
 def deploy_no_events(app_name, env_name, version, label, message, process=False, staged=False):

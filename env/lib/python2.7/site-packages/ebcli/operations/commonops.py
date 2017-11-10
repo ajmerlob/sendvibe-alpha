@@ -1,4 +1,4 @@
-# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -74,7 +74,7 @@ def wait_for_success_events(request_id, timeout_in_minutes=None,
         if request_id:
             while not events:
                 events = elasticbeanstalk.get_new_events(
-                    None, None, request_id, last_event_time=None, version_label=version_label
+                    app_name, env_name, request_id, last_event_time=None, version_label=version_label
                 )
 
                 if len(events) > 0:
@@ -91,13 +91,26 @@ def wait_for_success_events(request_id, timeout_in_minutes=None,
                 else:
                     time.sleep(sleep_time)
 
-        # Get remaining events without request id
+        # Get remaining events
         while (datetime.now() - start) < timediff:
             time.sleep(sleep_time)
 
             events = elasticbeanstalk.get_new_events(
-                app_name, env_name, None, last_event_time=last_time, platform_arn=platform_arn
+                app_name,
+                env_name,
+                request_id,
+                last_event_time=last_time,
+                platform_arn=platform_arn,
+                version_label=version_label
             )
+
+            if events:
+                events = filter_events(
+                    events,
+                    env_name=env_name,
+                    request_id=request_id,
+                    version_label=version_label
+                )
 
             for event in reversed(events):
                 if stream_events:
@@ -112,7 +125,34 @@ def wait_for_success_events(request_id, timeout_in_minutes=None,
     finally:
         streamer.end_stream()
     # We have timed out
-    raise TimeoutError('Timed out while waiting for command to Complete. The timeout can be set using the --timeout option.')
+
+    io.log_error(strings['timeout.error'].format(timeout_in_minutes=timeout_in_minutes))
+
+
+def filter_events(events, version_label=None, request_id=None, env_name=None):
+    """
+    Method filters events by their version_label, request_id, or env_name if supplied,
+    or any combination if multiple are specified.
+
+    :param events: A list of `events` returned by the `DescribeEvents` API
+    :param version_label: An optional `version_label` of the environment to filter by
+    :param request_id: An optional `request_id` of the operation being waited on to filter by
+    :param env_name: An optional `environment_name` of the environment that is being waited on
+    :return: A new list of events filtered as per the rules above.
+    """
+    filtered_events = []
+
+    for event in events:
+        if version_label and event.version_label and (event.version_label != version_label):
+            continue
+        if request_id and event.request_id and (event.request_id != request_id):
+            continue
+        if env_name and event.environment_name and (event.environment_name != env_name):
+            continue
+
+        filtered_events.append(event)
+
+    return filtered_events
 
 
 def wait_for_multiple_success_events(request_ids, timeout_in_minutes=None,
@@ -263,11 +303,14 @@ def wait_for_compose_events(request_id, app_name, grouped_envs, timeout_in_minut
                         successes[index] = True
     finally:
         streamer.end_stream()
-    raise TimeoutError('Timed out while waiting for commands to Complete')
+
+    io.log_error(strings['timeout.error'])
 
 
 def _is_success_string(message):
     if message.startswith(responses['event.completewitherrors']):
+        return True
+    if message.startswith(responses['event.launched_environment']):
         return True
     if message.startswith(responses['event.platformdeletesuccess']):
         return True
@@ -826,7 +869,7 @@ def create_app_version(app_name, process=False, label=None, message=None, staged
     fileoperations._traverse_to_project_root()
     try:
         if heuristics.directory_is_empty():
-            io.log_warning(strings['appversion.none'])
+            io.echo('NOTE: {}'.format(strings['appversion.none']))
             return None
     finally:
         os.chdir(cwd)
@@ -957,7 +1000,7 @@ def create_app_version_from_source(app_name, source, process=False, label=None, 
     fileoperations._traverse_to_project_root()
     try:
         if heuristics.directory_is_empty():
-            io.log_warning(strings['appversion.none'])
+            io.echo('NOTE: {}'.format(strings['appversion.none']))
             return None
     finally:
         os.chdir(cwd)
@@ -1081,11 +1124,10 @@ def update_environment(env_name, changes, nohang, remove=None,
         return
 
     io.echo('Printing Status:')
-    try:
-        wait_for_success_events(request_id, timeout_in_minutes=timeout,
-                                can_abort=True)
-    except TimeoutError:
-        io.log_error(strings['timeout.error'])
+
+    wait_for_success_events(request_id, timeout_in_minutes=timeout,
+                            can_abort=True)
+
 
 # BRANCH-DEFAULTS FOR CONFIG FILE
 def write_setting_to_current_branch(keyname, value):

@@ -1,4 +1,4 @@
-# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -43,6 +43,10 @@ strings = {
     'create.info': 'Creates a new environment.',
     'create.epilog': 'Type "--vpc." or "--database." for more VPC and database options.',
     'create.missinggroup': 'A group name is required when creating multiple environments. Please use the --group option.',
+    'create.sample_application_download_option': 'Do you want to download the sample application into the current directory?',
+    'create.downloading_sample_application': 'Downloading sample application to the current directory.',
+    'create.sample_application_download_complete': 'Download complete.',
+    'create.download_sample_app_choice_error': "'{choice}' is not a valid choice.",
     'events.info': 'Gets recent events.',
     'open.info': 'Opens the application URL in a browser.',
     'console.info': 'Opens the environment in the AWS Elastic Beanstalk Management Console.',
@@ -161,7 +165,7 @@ strings = {
     # Error, no solution stacks returned. Almost always due to permissions
     'sstacks.notfound': 'Elastic Beanstalk could not find any platforms. Ensure you have the necessary permissions to access Elastic Beanstalk.',
     'sstacks.notaversion': 'Elastic Beanstalk could not find any supported platforms for the given version {version}.',
-    'timeout.error': 'The operation timed out. The state of the environment is unknown. The timeout can be set using the --timeout option.',
+    'timeout.error': "The EB CLI timed out after {timeout_in_minutes} minute(s). The operation might still be running. To keep viewing events, run 'eb events -f'. To set timeout duration, use '--timeout MINUTES'.",
     'sc.notfound': 'Git is not set up for this project. EB CLI will deploy a .zip file of the entire directory.',
     'exit.platformworkspacenotsupported': 'This command is not supported for Platform workspaces.',
     'exit.applicationworkspacenotsupported': 'This command is not supported for Application workspaces.',
@@ -348,6 +352,7 @@ strings = {
     'tags.tag_keys_dont_exist_for_update': "Tags with the following keys can't be updated because they don't exist:",
     'tags.tag_key_max_length_exceeded': "Tag with the following key exceed length limit. Tag keys can be up to 128 characters in length.",
     'tags.tag_value_max_length_exceeded': "Tag with the following value exceed length limit. Tag values can be up to 256 characters in length.",
+    'cloudformation.cannot_find_app_source_for_environment': 'Cannot find app source for environment'
 }
 prompts = {
     'events.hanging': 'Streaming new events. Use CTRL+C to exit.',
@@ -419,7 +424,7 @@ prompts = {
     'upgrade.applyrolling': 'Enabling {0}-based rolling updates to environment.',
     'create.dockerrunupgrade': 'Multicontainer Docker environments do not support the version number of the Dockerrun.aws.json file that you provided. Type "eb labs convert-dockerrun" to convert it to a newer format.',
     'ecs.permissions': 'The Multi-container Docker platform requires additional ECS permissions. Add the permissions to the aws-elasticbeanstalk-ec2-role or use your own instance profile by typing "-ip {profile-name}".\n'
-                       'For more information see: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker_ecstutorial.html#create_deploy_docker_ecstutorial_role',
+                       'For more information see: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker_ecs.html#create_deploy_docker_ecs_role',
     'create.servicerole.info': '2.0+ Platforms require a service role. We will attempt to create one for you. You can specify your own role using the --service-role option.',
     'create.servicerole.view': 'Type "view" to see the policy, or just press ENTER to continue',
     'create.servicerole.required': '2.0+ Platforms require a service role. You can provide one with --service-role option',
@@ -655,6 +660,7 @@ flag_text = {
 ### The below are programmatic and are not intended to be edited unless the service response changes
 responses = {
     'event.completewitherrors': 'Create environment operation is complete, but with errors.',
+    'event.launched_environment': 'Launched environment',
     'event.platformdeletesuccess': 'Successfully deleted platform version',
     'event.platformdeletefailed': 'Failed to delete platform version',
     'event.platformcreatefailed': 'Failed to create platform version',

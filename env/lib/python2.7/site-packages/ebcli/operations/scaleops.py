@@ -1,4 +1,4 @@
-# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -55,9 +55,9 @@ def scale(app_name, env_name, number, confirm, timeout=None):
             }
         )
     request_id = elasticbeanstalk.update_environment(env_name, options)
-    try:
-        commonops.wait_for_success_events(request_id,
-                                timeout_in_minutes=timeout or 5,
-                                can_abort=True)
-    except TimeoutError:
-        io.log_error(strings['timeout.error'])
+
+    commonops.wait_for_success_events(
+        request_id,
+        timeout_in_minutes=timeout or 5,
+        can_abort=True
+    )

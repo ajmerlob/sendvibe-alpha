@@ -1,4 +1,4 @@
-# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -260,6 +260,11 @@ class CreateController(AbstractBaseController):
         env_request.option_settings += envvars
 
         process_app_version = fileoperations.env_yaml_exists() or process
+
+        # avoid prematurely timing out in the CLI when an environment is launched with a RDS DB
+        if not timeout and database:
+            timeout = 15
+
         createops.make_new_env(env_request,
                                branch_default=branch_default,
                                process_app_version=process_app_version,

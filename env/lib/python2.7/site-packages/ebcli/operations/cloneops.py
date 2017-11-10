@@ -1,4 +1,4 @@
-# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -43,10 +43,8 @@ def make_cloned_env(clone_request, nohang=False, timeout=None):
         return
 
     io.echo('Printing Status:')
-    try:
-        commonops.wait_for_success_events(request_id, timeout_in_minutes=timeout)
-    except TimeoutError:
-        io.log_error(strings['timeout.error'])
+
+    commonops.wait_for_success_events(request_id, timeout_in_minutes=timeout)
 
 
 def clone_env(clone_request):

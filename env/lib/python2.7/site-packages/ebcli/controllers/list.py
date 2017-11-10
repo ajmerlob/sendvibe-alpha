@@ -1,4 +1,4 @@
-# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -20,7 +20,7 @@ class ListController(AbstractBaseController):
     class Meta:
         label = 'list'
         description = strings['list.info']
-        usage = AbstractBaseController.Meta.usage.replace('{cmd}', label)
+        usage = 'eb list [options ...]'
         arguments = [
             (['-a', '--all'], dict(action='store_true',
                                    help=flag_text['list.all']))

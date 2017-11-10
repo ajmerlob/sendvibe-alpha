@@ -1,4 +1,4 @@
-# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -128,17 +128,26 @@ def log_alert(message):
 
 
 def log_info(message):
-    ebglobals.app.log.info(message)
+    try:
+        ebglobals.app.log.info(message)
+    except AttributeError:
+        echo('INFO: {}'.format(message))
 
 
 def log_warning(message):
-    ebglobals.app.log.warn(message)
+    try:
+        ebglobals.app.log.warn(message)
+    except AttributeError:
+        echo(bold(color('red', 'WARN: {}'.format(message))))
 
 
 def log_error(message):
-    if ebglobals.app.pargs and ebglobals.app.pargs.debug:  # Debug mode, use logger
-        ebglobals.app.log.error(message)
-    else:  # Otherwise, use color
+    try:
+        if ebglobals.app.pargs.debug:
+            ebglobals.app.log.error(message)
+        else:
+            echo(bold(color('red', 'ERROR: {}'.format(message))))
+    except AttributeError:
         echo(bold(color('red', 'ERROR: {}'.format(message))))
 
 
