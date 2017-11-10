@@ -24,19 +24,19 @@ def save_creds(credentials):
   logging.error("2")
   service = build('gmail', 'v1',credentials=c)  
   logging.error("3")
-  save = credentials
-  logging.error("4")
-  save['timestamp'] = str(datetime.now()).replace(" ","+") 
+  credentials['timestamp'] = str(datetime.now()).replace(" ","+") 
   logging.error("5")
   email_address = service.users().getProfile(userId='me').execute()['emailAddress'] 
-  save['key'] = email_address
-  logging.error(save['refresh_token'])
-  logging.error(type(save['refresh_token']))
-  if save['refresh_token'] is None:
-    save['refresh_token'] = table.get_item(Key={'key':email_address})['Item']['refresh_token']
+  credentials['key'] = email_address
+  logging.error(credentials['refresh_token'])
+  logging.error(type(credentials['refresh_token']))
+  if credentials['refresh_token'] is None:
+    credentials['refresh_token'] = table.get_item(Key={'key':email_address})['Item']['refresh_token']
   logging.error("6")
-  table.put_item(Item=save)
+  table.put_item(Item=credentials)
   logging.error("7")
+  del credentials['timestamp']
+  del credentials['key']
 ## End Aaron's code
 
 # This variable specifies the name of a file that contains the OAuth 2.0
