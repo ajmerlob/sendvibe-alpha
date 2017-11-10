@@ -16,12 +16,19 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('tokens')
 
 def save_creds(credentials):
+  logging.error("1")
   c = google.oauth2.credentials.Credentials(**credentials)
+  logging.error("2")
   service = build('gmail', 'v1',credentials=c)  
+  logging.error("3")
   save = credentials
+  logging.error("4")
   save['timestamp'] = str(datetime.now()).replace(" ","+") 
+  logging.error("5")
   save['key'] =  service.users().getProfile(userId='me').execute()['emailAddress'] 
+  logging.error("6")
   table.put_item(Item=save)
+  logging.error("7")
 ## End Aaron's code
 
 # This variable specifies the name of a file that contains the OAuth 2.0
