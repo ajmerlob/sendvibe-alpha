@@ -33,7 +33,7 @@ def save_creds(credentials):
   logging.error(save['refresh_token'])
   logging.error(type(save['refresh_token']))
   if save['refresh_token'] is None:
-    save['refresh_token'] = table.get_item(key=email_address)['Item']['refresh_token']
+    save['refresh_token'] = table.get_item(Key=email_address)['Item']['refresh_token']
   logging.error("6")
   table.put_item(Item=save)
   logging.error("7")
