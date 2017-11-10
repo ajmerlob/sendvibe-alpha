@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import logging
+logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
+
 import os
 import flask
 import requests
@@ -28,7 +30,7 @@ def save_creds(credentials):
   logging.error("5")
   save['key'] =  service.users().getProfile(userId='me').execute()['emailAddress'] 
   logging.error("6")
-  table.put_item(Item=save)
+  table.update_item(Item=save)
   logging.error("7")
 ## End Aaron's code
 
