@@ -16,7 +16,8 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('tokens')
 
 def save_creds(credentials):
-  service = build('gmail', 'v1',credentials=credentials)  
+  c = google.oauth2.credentials.Credentials(**credentials)
+  service = build('gmail', 'v1',credentials=c)  
   save = credentials
   save['timestamp'] = str(datetime.now()).replace(" ","+") 
   save['key'] =  service.users().getProfile(userId='me').execute()['emailAddress'] 
