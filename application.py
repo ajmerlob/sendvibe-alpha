@@ -13,18 +13,13 @@ import boto3
 ## Aaron's code below
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('tokens')
-try:
-  import cPickle as pickle
-except:
-  import pickle
 
 def save_creds(credentials):
-  timestamp = str(datetime.now()).replace(" ","+")
-  database_file = './saved_tokens/' + timestamp + ".token"
-  pickle.dump(credentials, open(database_file,'wb'))
-  credentials['timestamp'] = timestamp
-  table.put_item(Item=credentials)
-  del credentials['timestamp']
+  service = build('gmail', 'v1',credentials=credentials)  
+  save = credentials
+  save['timestamp'] = str(datetime.now()).replace(" ","+") 
+  save['key'] =  service.users().getProfile(userId='me').execute()['emailAddress'] 
+  table.put_item(Item=save)
 ## End Aaron's code
 
 # This variable specifies the name of a file that contains the OAuth 2.0
@@ -133,61 +128,6 @@ def credentials_to_dict(credentials):
           'client_id': credentials.client_id,
           'client_secret': credentials.client_secret,
           'scopes': credentials.scopes}
-
-### For use in testing with currently authenticated user
-#@application.route('/test')
-#def test_api_request():
-#  if 'credentials' not in flask.session:
-#    return flask.redirect('authorize')
-#
-#  # Load credentials from the session.
-#  credentials = google.oauth2.credentials.Credentials(
-#      **flask.session['credentials'])
-#
-#  gmail = googleapiclient.discovery.build(
-#      API_SERVICE_NAME, API_VERSION, credentials=credentials)
-#
-#  results = gmail.users().messages().list(userId='me').execute()
-#
-#  # Save credentials back to session in case access token was refreshed.
-#  # ACTION ITEM: In a production app, you likely want to save these
-#  #              credentials in a persistent database instead.
-#  flask.session['credentials'] = credentials_to_dict(credentials)
-#  save_creds(flask.session['credentials'])
-#
-#  return flask.jsonify(**results)
-
-## This clears out the authenticated user from the session
-## Can be used in testing the revoke error condition.
-#@application.route('/clear')
-#def clear_credentials():
-#  if 'credentials' in flask.session:
-#    del flask.session['credentials']
-#  return ('Credentials have been cleared.<br><br>' +
-#          print_index_table())
-
-
-#def print_index_table():
-#  return ('<table>' +
-#          '<tr><td><a href="/test">Test an API request</a></td>' +
-#          '<td>Submit an API request and see a formatted JSON response. ' +
-#          '    Go through the authorization flow if there are no stored ' +
-#          '    credentials for the user.</td></tr>' +
-#          '<tr><td><a href="/authorize">Test the auth flow directly</a></td>' +
-#          '<td>Go directly to the authorization flow. If there are stored ' +
-#          '    credentials, you still might not be prompted to reauthorize ' +
-#          '    the application.</td></tr>' +
-#          '<tr><td><a href="/revoke">Revoke current credentials</a></td>' +
-#          '<td>Revoke the access token associated with the current user ' +
-#          '    session. After revoking credentials, if you go to the test ' +
-#          '    page, you should see an <code>invalid_grant</code> error.' +
-#          '</td></tr>' +
-#          '<tr><td><a href="/clear">Clear Flask session credentials</a></td>' +
-#          '<td>Clear the access token currently stored in the user session. ' +
-#          '    After clearing the token, if you <a href="/test">test the ' +
-#          '    API request</a> again, you should go back to the auth flow.' +
-#          '</td></tr></table>')
-
 
 if __name__ == '__main__':
   # When running locally, disable OAuthlib's HTTPs verification.
