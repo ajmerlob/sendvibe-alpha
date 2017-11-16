@@ -28,10 +28,16 @@ def save_creds(credentials):
   logging.error("5")
   email_address = service.users().getProfile(userId='me').execute()['emailAddress'] 
   credentials['key'] = email_address
-  logging.error(credentials['refresh_token'])
-  logging.error(type(credentials['refresh_token']))
-  if credentials['refresh_token'] is None:
-    credentials['refresh_token'] = table.get_item(Key={'key':email_address})['Item']['refresh_token']
+
+  ## If there is no new refresh token, and these credentials are already in there with a previous refresh token, then use the existing refresh token
+  try:
+    logging.error(credentials['refresh_token'])
+    logging.error(type(credentials['refresh_token']))
+    if credentials['refresh_token'] is None:
+      credentials['refresh_token'] = table.get_item(Key={'key':email_address})['Item']['refresh_token']
+  except:
+    logging.error("get existing refresh_token failed - sending None")
+    credentials['refresh_token'] = None
   logging.error("6")
   table.put_item(Item=credentials)
   logging.error("7")
