@@ -72,9 +72,9 @@ application.secret_key = 'youdontknowmelikeiknowme123123231homie'
 def index():
   return flask.redirect("https://sendvibe.email")
 
-@application.route('/sub',methods=['POST'])
+@application.route('/inbox',methods=['POST'])
 def sub_message():
-  logging.error("Got something!")
+  logging.error("Got something inboxy!")
   sub_queue.send_message( MessageBody=flask.request.data)
   return flask.redirect("https://sendvibe.email"), 200
 
