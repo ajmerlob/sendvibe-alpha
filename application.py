@@ -19,7 +19,7 @@ import boto3
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('tokens')
 sqs = boto3.resource('sqs')
-queue = sqs.Queue('subscription_email') 
+queue = sqs.Queue('https://sqs.us-west-2.amazonaws.com/985724320380/subscription_email') 
 
 
 def save_creds(credentials):
