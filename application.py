@@ -14,6 +14,7 @@ import googleapiclient.discovery
 from apiclient.discovery import build
 from datetime import datetime
 import boto3
+import base64
 
 ## Aaron's code below
 dynamodb = boto3.resource('dynamodb')
@@ -73,13 +74,13 @@ def index():
 
 @application.route('/sub',methods=['POST'])
 def sub_message():
-  logging.error("Got something! {}".format(json.dumps(flask.request.data)))
+  logging.error("Got something! {}".format(base64.b64decode(flask.request.data['message']['data'])))
   sub_queue.send_message( MessageBody=flask.request.data)
   return flask.redirect("https://sendvibe.email"), 200
 
 @application.route('/drafts',methods=['POST'])
 def draft_message():
-  logging.error("Got something drafty! {}".format(json.dumps(flask.request.data)))
+  logging.error("Got something drafty! {}".format(base64.b64decode(flask.request.data['message']['data'])))
   draft_queue.send_message( MessageBody=flask.request.data)
   return flask.redirect("https://sendvibe.email"), 200
 
