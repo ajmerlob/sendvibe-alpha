@@ -73,7 +73,7 @@ def index():
   return flask.redirect("https://sendvibe.email")
 
 @application.route('/inbox',methods=['POST'])
-def sub_message():
+def inbox_message():
   logging.error("Got something inboxy!")
   sub_queue.send_message( MessageBody=flask.request.data)
   logging.error(json.dumps(flask.request.data))
