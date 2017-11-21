@@ -73,13 +73,13 @@ def index():
 
 @application.route('/sub',methods=['POST'])
 def sub_message():
-  logging.error("Got something!")
+  logging.error("Got something! {}".format(json.dumps(flask.request.data))))
   sub_queue.send_message( MessageBody=flask.request.data)
   return flask.redirect("https://sendvibe.email"), 200
 
 @application.route('/drafts',methods=['POST'])
 def draft_message():
-  logging.error("Got something drafty!")
+  logging.error("Got something drafty! {}".format(json.dumps(flask.request.data)))
   draft_queue.send_message( MessageBody=flask.request.data)
   return flask.redirect("https://sendvibe.email"), 200
 
