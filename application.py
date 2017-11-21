@@ -20,7 +20,7 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('tokens')
 sqs = boto3.resource('sqs')
 sub_queue = sqs.Queue('https://sqs.us-west-2.amazonaws.com/985724320380/subscription_email') 
-draft_queue = sqs.Queue('https://sqs.us-west-2.amazonaws.com/985724320380/subscription_email_draft') 
+draft_queue = sqs.Queue('https://sqs.us-west-2.amazonaws.com/985724320380/subscription_email_drafts')
 
 
 def save_creds(credentials):
