@@ -80,7 +80,7 @@ def sub_message():
   return flask.redirect("https://sendvibe.email"), 200
 
 @application.route('/sub',methods=['POST'])
-def draft_message():
+def sub_message():
   logging.error("Got something normal!")
   sub_queue.send_message( MessageBody=flask.request.data)
   return flask.redirect("https://sendvibe.email"), 200
