@@ -73,7 +73,7 @@ def index():
 
 @application.route('/sub',methods=['POST'])
 def sub_message():
-  logging.error("Got something! {}".format(json.dumps(flask.request.data))))
+  logging.error("Got something! {}".format(json.dumps(flask.request.data)))
   sub_queue.send_message( MessageBody=flask.request.data)
   return flask.redirect("https://sendvibe.email"), 200
 
