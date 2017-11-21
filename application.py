@@ -69,7 +69,7 @@ def index():
 @application.route('/sub',methods=['GET', 'POST'])
 def sub_message():
   logging.error("Got something!")
-  return flask.redirect("https://sendvibe.email")
+  return flask.redirect("https://sendvibe.email"), 200
 
 
 ## Authorize and oauth2callback work as a 1-2 punch to grab 
