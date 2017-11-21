@@ -75,6 +75,15 @@ def index():
 @application.route('/inbox',methods=['POST'])
 def inbox_message():
   logging.error("Got something inboxy!")
+  json_data = flask.request.data
+  data = json.loads(json_data)
+  if 'message' in data:
+    if 'data' in data['message']:
+      logging.error(base64.b64decode(data['message']['data']))
+    else:
+      logging.error(json_data)
+  else:
+    logging.error(json_data)
   sub_queue.send_message( MessageBody=flask.request.data)
   logging.error(json.dumps(flask.request.data))
   return flask.redirect("https://sendvibe.email"), 200
@@ -82,6 +91,15 @@ def inbox_message():
 @application.route('/sub',methods=['POST'])
 def sub_message():
   logging.error("Got something normal!")
+  json_data = flask.request.data
+  data = json.loads(json_data)
+  if 'message' in data:
+    if 'data' in data['message']:
+      logging.error(base64.b64decode(data['message']['data']))
+    else:
+      logging.error(json_data)
+  else:
+    logging.error(json_data)
   sub_queue.send_message( MessageBody=flask.request.data)
   return flask.redirect("https://sendvibe.email"), 200
 
