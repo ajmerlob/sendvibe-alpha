@@ -19,7 +19,8 @@ import boto3
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('tokens')
 sqs = boto3.resource('sqs')
-queue = sqs.Queue('https://sqs.us-west-2.amazonaws.com/985724320380/subscription_email') 
+sub_queue = sqs.Queue('https://sqs.us-west-2.amazonaws.com/985724320380/subscription_email') 
+draft_queue = sqs.Queue('https://sqs.us-west-2.amazonaws.com/985724320380/subscription_email_draft') 
 
 
 def save_creds(credentials):
@@ -73,10 +74,14 @@ def index():
 @application.route('/sub',methods=['POST'])
 def sub_message():
   logging.error("Got something!")
-  #data = json.loads(flask.request.data)
-  queue.send_message( MessageBody=flask.request.data)
+  sub_queue.send_message( MessageBody=flask.request.data)
   return flask.redirect("https://sendvibe.email"), 200
 
+@application.route('/drafts',methods=['POST'])
+def draft_message():
+  logging.error("Got something drafty!")
+  draft_queue.send_message( MessageBody=flask.request.data)
+  return flask.redirect("https://sendvibe.email"), 200
 
 ## Authorize and oauth2callback work as a 1-2 punch to grab 
 ## the all important token.  This routes the user to the 
