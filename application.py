@@ -88,7 +88,16 @@ def sub_message():
 @application.route('/drafts',methods=['POST'])
 def draft_message():
   logging.error("Got something drafty!")
-  draft_queue.send_message( MessageBody=flask.request.data)
+  json_data = flask.request.data
+  data = json.loads(json_data)
+  if 'message' in data:
+    if 'data' in data['message']:
+      logging.error(base64.b64decode(data['message']['data']))
+    else:
+      logging.error(json_data)
+  else:
+    logging.error(json_data)
+  draft_queue.send_message( MessageBody=json_data)
   return flask.redirect("https://sendvibe.email"), 200
 
 ## Authorize and oauth2callback work as a 1-2 punch to grab 
