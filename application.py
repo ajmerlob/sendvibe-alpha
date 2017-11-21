@@ -18,8 +18,8 @@ import boto3
 ## Aaron's code below
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('tokens')
-sqs = boto3.resource('sqs')
-queue = sqs.get_queue_by_name('subscription_email') 
+sqs = boto3.client('sqs')
+queue = sqs.Queue('subscription_email') 
 
 
 def save_creds(credentials):
