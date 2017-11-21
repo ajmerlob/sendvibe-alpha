@@ -25,28 +25,23 @@ draft_queue = sqs.Queue('https://sqs.us-west-2.amazonaws.com/985724320380/subscr
 
 
 def save_creds(credentials):
-  logging.error("1")
+  logging.error("Running through save_creds")
   c = google.oauth2.credentials.Credentials(**credentials)
-  logging.error("2")
   service = build('gmail', 'v1',credentials=c)  
-  logging.error("3")
   credentials['timestamp'] = str(datetime.now()).replace(" ","+") 
-  logging.error("5")
   email_address = service.users().getProfile(userId='me').execute()['emailAddress'] 
   credentials['key'] = email_address
 
   ## If there is no new refresh token, and these credentials are already in there with a previous refresh token, then use the existing refresh token
   try:
-    logging.error(credentials['refresh_token'])
-    logging.error(type(credentials['refresh_token']))
+    #logging.error(credentials['refresh_token'])
+    #logging.error(type(credentials['refresh_token']))
     if credentials['refresh_token'] is None:
       credentials['refresh_token'] = table.get_item(Key={'key':email_address})['Item']['refresh_token']
   except:
     logging.error("get existing refresh_token failed - sending None")
     credentials['refresh_token'] = None
-  logging.error("6")
   table.put_item(Item=credentials)
-  logging.error("7")
   del credentials['timestamp']
   del credentials['key']
 ## End Aaron's code
@@ -85,7 +80,6 @@ def inbox_message():
   else:
     logging.error(json_data)
   sub_queue.send_message( MessageBody=flask.request.data)
-  logging.error(json.dumps(flask.request.data))
   return flask.redirect("https://sendvibe.email"), 200
 
 @application.route('/sub',methods=['POST'])
