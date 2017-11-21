@@ -18,7 +18,7 @@ import boto3
 ## Aaron's code below
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('tokens')
-sqs = boto3.client('sqs')
+sqs = boto3.resource('sqs')
 queue = sqs.Queue('subscription_email') 
 
 
