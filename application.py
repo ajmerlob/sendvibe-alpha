@@ -66,6 +66,12 @@ application.secret_key = 'youdontknowmelikeiknowme123123231homie'
 def index():
   return flask.redirect("https://sendvibe.email")
 
+@application.route('/sub')
+def sub_message():
+  logging.error("Got something!")
+  return flask.redirect("https://sendvibe.email")
+
+
 ## Authorize and oauth2callback work as a 1-2 punch to grab 
 ## the all important token.  This routes the user to the 
 ## 3rd party site for authentication
