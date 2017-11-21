@@ -6,6 +6,7 @@ logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
 import os
 import flask
 import requests
+import json
 
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
@@ -17,6 +18,9 @@ import boto3
 ## Aaron's code below
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('tokens')
+sqs = boto3.resource('sqs')
+queue = sqs.get_queue_by_name('subscription_email') 
+
 
 def save_creds(credentials):
   logging.error("1")
@@ -69,7 +73,8 @@ def index():
 @application.route('/sub',methods=['POST'])
 def sub_message():
   logging.error("Got something!")
-  logging.error(flask.request.data)
+  #data = json.loads(flask.request.data)
+  queue.send_message( MessageBody=flask.request.data)
   return flask.redirect("https://sendvibe.email"), 200
 
 
