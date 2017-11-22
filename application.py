@@ -24,8 +24,6 @@ sub_queue = sqs.Queue('https://sqs.us-west-2.amazonaws.com/985724320380/subscrip
 draft_queue = sqs.Queue('https://sqs.us-west-2.amazonaws.com/985724320380/subscription_email_drafts')
 sns = boto3.resource('sns')
 sns_topic = sns.Topic('arn:aws:sns:us-west-2:985724320380:sendvibe-email-stream')
-sns_topic.load()
-logging.error(sns_topic.publish(Message=u'Hi mom!',TopicArn='arn:aws:sns:us-west-2:985724320380:sendvibe-email-stream'))
 
 def save_creds(credentials):
   logging.error("Running through save_creds")
@@ -86,7 +84,8 @@ def inbox_message():
       logging.error(json_data)
   else:
     logging.error(json_data)
-  sns_topic.publish(Message=json_data,TopicArn='arn:aws:sns:us-west-2:985724320380:sendvibe-email-stream')
+  sns_topic.publish(Message="Beginning SNS Publish")
+  sns_topic.publish(Message=str(json_data))
   #sub_queue.send_message( MessageBody=flask.request.data)
   return flask.redirect("https://sendvibe.email"), 200
 
