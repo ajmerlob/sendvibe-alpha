@@ -22,7 +22,10 @@ table = dynamodb.Table('tokens')
 sqs = boto3.resource('sqs')
 sub_queue = sqs.Queue('https://sqs.us-west-2.amazonaws.com/985724320380/subscription_email') 
 draft_queue = sqs.Queue('https://sqs.us-west-2.amazonaws.com/985724320380/subscription_email_drafts')
-
+sns = boto3.resource('sns')
+sns_topic = sns.Topic('arn:aws:sns:us-west-2:985724320380:sendvibe-email-stream')
+sns_topic.load()
+logging.error(sns_topic.publish(Message=u'Hi mom!',TopicArn='arn:aws:sns:us-west-2:985724320380:sendvibe-email-stream'))
 
 def save_creds(credentials):
   logging.error("Running through save_creds")
@@ -67,9 +70,13 @@ application.secret_key = 'youdontknowmelikeiknowme123123231homie'
 def index():
   return flask.redirect("https://sendvibe.email")
 
+@application.route('/sub',methods=['POST'])
+def sub_test():
+  logging.error(flask.request.data)
+  return flask.redirect("https://sendvibe.email"),200
+
 @application.route('/inbox',methods=['POST'])
 def inbox_message():
-  logging.error("Got something inboxy!")
   json_data = flask.request.data
   data = json.loads(json_data)
   if 'message' in data:
@@ -79,37 +86,8 @@ def inbox_message():
       logging.error(json_data)
   else:
     logging.error(json_data)
-  sub_queue.send_message( MessageBody=flask.request.data)
-  return flask.redirect("https://sendvibe.email"), 200
-
-@application.route('/sub',methods=['POST'])
-def sub_message():
-  logging.error("Got something normal!")
-  json_data = flask.request.data
-  data = json.loads(json_data)
-  if 'message' in data:
-    if 'data' in data['message']:
-      logging.error(base64.b64decode(data['message']['data']))
-    else:
-      logging.error(json_data)
-  else:
-    logging.error(json_data)
-  sub_queue.send_message( MessageBody=flask.request.data)
-  return flask.redirect("https://sendvibe.email"), 200
-
-@application.route('/drafts',methods=['POST'])
-def draft_message():
-  logging.error("Got something drafty!")
-  json_data = flask.request.data
-  data = json.loads(json_data)
-  if 'message' in data:
-    if 'data' in data['message']:
-      logging.error(base64.b64decode(data['message']['data']))
-    else:
-      logging.error(json_data)
-  else:
-    logging.error(json_data)
-  draft_queue.send_message( MessageBody=json_data)
+  sns_topic.publish(Message=json_data,TopicArn='arn:aws:sns:us-west-2:985724320380:sendvibe-email-stream')
+  #sub_queue.send_message( MessageBody=flask.request.data)
   return flask.redirect("https://sendvibe.email"), 200
 
 ## Authorize and oauth2callback work as a 1-2 punch to grab 
