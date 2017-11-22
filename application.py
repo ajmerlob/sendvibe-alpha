@@ -70,7 +70,8 @@ def index():
 
 @application.route('/sub',methods=['POST'])
 def sub_test():
-  logging.error(flask.request.data)
+  data = json.loads(flask.request.data)
+  logging.error(data['Message'])
   return flask.redirect("https://sendvibe.email"),200
 
 @application.route('/inbox',methods=['POST'])
