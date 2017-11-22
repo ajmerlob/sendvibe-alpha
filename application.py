@@ -19,9 +19,6 @@ import base64
 ## Aaron's code below
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('tokens')
-sqs = boto3.resource('sqs')
-sub_queue = sqs.Queue('https://sqs.us-west-2.amazonaws.com/985724320380/subscription_email') 
-draft_queue = sqs.Queue('https://sqs.us-west-2.amazonaws.com/985724320380/subscription_email_drafts')
 sns = boto3.resource('sns')
 sns_topic = sns.Topic('arn:aws:sns:us-west-2:985724320380:sendvibe-email-stream')
 
@@ -85,9 +82,7 @@ def inbox_message():
       logging.error(json_data)
   else:
     logging.error(json_data)
-  sns_topic.publish(Message="Beginning SNS Publish")
   sns_topic.publish(Message=str(json_data))
-  #sub_queue.send_message( MessageBody=flask.request.data)
   return flask.redirect("https://sendvibe.email"), 200
 
 ## Authorize and oauth2callback work as a 1-2 punch to grab 
